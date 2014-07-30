@@ -5,12 +5,18 @@ body{
 header{
     display:block;
     margin:0 auto;
-    width:500px;
+    width:100%;
     text-align:center;
+}
+header h1{
+    font-family:Arial;
+    font-size:40px;
+    font-weight:bold;
+    margin:10px auto;
 }
 header #newgamebutton{
     display:block;
-    margin:20px auto;
+    margin:0px auto;
     width:100px;
     padding:10px 10px;
     background-color:#8f7a66;
@@ -27,7 +33,7 @@ header #newgamebutton:hover{
     width:460px;
     height:460px;
     padding:20px;
-    margin:50px auto;
+    margin:0px auto;
     background-color:#bbada0;
     border-radius:10px;
     position:relative;

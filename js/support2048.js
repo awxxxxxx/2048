@@ -1,14 +1,24 @@
 
+/*********相对尺寸********/
+
+var documentWidth = window.screen.availWidth;
+var gridContainerWidth = 0.92 * documentWidth;
+var cellSideLength = 0.18 * documentWidth;
+var cellSpace = 0.04 * documentWidth;
+
+
+
+
 /*********确定顶部的位置********/
 
 var getPosTop = function(i,j) {
-    return 20 + 120 * i;
+    return cellSpace + (cellSpace + cellSideLength) * i;
 };
 
 /*******确定距离左边的位置*******/
 
 var getPosLeft = function(i,j) {
-    return 20 + 120 * j;
+    return cellSpace + (cellSpace + cellSideLength) * j;
 };
 
 /*******返回数字背景的颜色**********/

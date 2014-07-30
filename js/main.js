@@ -16,9 +16,28 @@ var score = 0;
 var hasConflicted = new Array();
 
 $(document).ready(function() {
+    prepareForMobile();
     newgame();
 });
 
+/******为移动端准备布局********/
+
+var prepareForMobile = function() {
+
+    if(documentWidth > 500){
+        gridContainerWidth = 500;
+        cellSideLength = 100;
+        cellSpace = 20;
+    }
+    $('#grid-container').css('width',gridContainerWidth - 2 * cellSpace);
+    $('#grid-container').css('height',gridContainerWidth - 2 * cellSpace);
+    $('#grid-container').css('padding',cellSpace);
+    $('#grid-container').css('border-radius',0.02 * gridContainerWidth);
+
+    $('.grid-cell').css('width',cellSideLength);
+    $('.grid-cell').css('height',cellSideLength);
+    $('.grid-cell').css('border-radius',0.02 * cellSideLength);
+};
 
 /****开始游戏********/
 
@@ -32,6 +51,7 @@ var newgame = function() {
 
     RandomNumber();
     RandomNumber();
+
     score = 0;
     updateScore(score);
 };
@@ -80,14 +100,14 @@ var updataBoardView = function() {
 
                 theNumberCell.css('width','0px');
                 theNumberCell.css('height','0px');
-                theNumberCell.css('top',getPosTop(i,j) + 50);
-                theNumberCell.css('left',getPosLeft(i,j) + 50);
+                theNumberCell.css('top',getPosTop(i,j) + cellSideLength / 2);
+                theNumberCell.css('left',getPosLeft(i,j) + cellSideLength / 2);
 
             }
             else{
 
-                theNumberCell.css('width','100px');
-                theNumberCell.css('height','100px');
+                theNumberCell.css('width',cellSideLength);
+                theNumberCell.css('height',cellSideLength);
                 theNumberCell.css('top',getPosTop(i,j));
                 theNumberCell.css('left',getPosLeft(i,j));
                 theNumberCell.css('background-color',getNumberBackgroundColor(board[i][j]));
@@ -98,6 +118,9 @@ var updataBoardView = function() {
 
         }
     }
+    $('.number-cell').css('line-height',cellSideLength+'px');
+    $('.number-cell').css('font-size',0.6*cellSideLength+'px');
+    $('.number-cell').css('border-radius',0.02*cellSideLength);
 };
 
 /******随机生成一个数字*********/
@@ -148,6 +171,10 @@ var RandomNumber = function() {
 /******键盘监听事件*********/
 
 $(document).keydown(function(event){
+
+    //阻止默认效果
+
+    event.preventDefault();
 
     switch(event.keyCode){
 
@@ -343,6 +370,78 @@ var moveDown = function() {
     return true;
 
 };
+
+/******触摸监听时间********/
+
+//触摸开始
+
+document.addEventListener('touchstart',function(event){
+
+    startX = event.touches[0].pageX;
+    startY = event.touches[0].pageY;
+});
+
+//处理不能移动的bug
+
+document.addEventListener('touchmove',function(event){
+    event.preventDefault();
+});
+
+
+//触摸结束
+
+document.addEventListener('touchend',function(event){
+
+    endX = event.changedTouches[0].pageX;
+    endY = event.changedTouches[0].pageY;
+    var detailx = endX - startX;
+    var detaily = endY - startY;
+
+    //防止误触
+
+    if(Math.abs(detailx)<0.2*documentWidth&&Math.abs(detaily)<0.2*documentWidth){
+        return;
+    }
+
+    //x轴移动
+    if(Math.abs(detailx) > Math.abs(detaily)){
+
+        //左移
+        if(detailx < 0){
+
+            if(moveLeft()){
+               setTimeout('RandomNumber()',210);
+               setTimeout('isGameOver()',300);
+            }
+        }
+        else{//右移
+
+            if(moveRight()){
+               setTimeout('RandomNumber()',210);
+               setTimeout('isGameOver()',300);
+            }
+        }
+    }
+    else{//y轴移动
+
+        //上移
+        if(detaily < 0){
+
+            if(moveUp()){
+               setTimeout('RandomNumber()',210);
+               setTimeout('isGameOver()',300);
+            }
+        }
+        else{//下移
+
+            if(moveDown()){
+                setTimeout('RandomNumber()',210);
+               setTimeout('isGameOver()',300);
+            }
+        }
+    }
+});
+
 
 
 /******检测游戏是否结束******/

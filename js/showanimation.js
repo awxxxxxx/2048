@@ -14,8 +14,8 @@ var showNumber = function(x,y,number){
     numberCell.text(number);
 
     numberCell.animate({
-        width:'100px',
-        height:'100px',
+        width:cellSideLength,
+        height:cellSideLength,
         top:getPosTop(x,y),
         left:getPosLeft(x,y)
     },50);
