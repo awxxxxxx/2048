@@ -172,31 +172,32 @@ var RandomNumber = function() {
 
 $(document).keydown(function(event){
 
-    //阻止默认效果
-
-    event.preventDefault();
 
     switch(event.keyCode){
 
         case 37:
+            event.preventDefault();
             if(moveLeft()){
                setTimeout('RandomNumber()',210);
                setTimeout('isGameOver()',300);
             }
             break;
         case 38:
+            event.preventDefault();
             if(moveUp()){
                setTimeout('RandomNumber()',210);
                setTimeout('isGameOver()',300);
             }
             break;
         case 39:
+            event.preventDefault();
             if(moveRight()){
                setTimeout('RandomNumber()',210);
                setTimeout('isGameOver()',300);
             }
             break;
         case 40:
+            event.preventDefault();
             if(moveDown()){
                 setTimeout('RandomNumber()',210);
                setTimeout('isGameOver()',300);
