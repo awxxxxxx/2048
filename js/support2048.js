@@ -147,9 +147,18 @@ var noBlockVer = function(col,row1,row2,arr){
 
 /******能否移动*****/
 
-var nomove = function() {
-    if(canMoveDown || canMoveRight()||canMoveLeft()||canMoveUp()){
+var nomove = function(arr) {
+    if(canMoveDown(arr) || canMoveRight(arr)||canMoveLeft(arr)||canMoveUp(arr)){
         return false;
     }
     return true;
 };
+
+/******检测数字是否超过3位数*******/
+
+var overSize = function(i,j,board) {
+    if(board[i][j] > 1000){
+       $('#number-cell-' + i +'-' + j).css('font-size','40px');
+    }
+};
+

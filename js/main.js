@@ -2,8 +2,18 @@
  *游戏主控制
  *@author:WaterBear
  */
+
+/******游戏的16宫格数组******/
+
 var board = new Array();
+
+/******游戏的分数********/
+
 var score = 0;
+
+/******是否发生碰撞******/
+
+var hasConflicted = new Array();
 
 $(document).ready(function() {
     newgame();
@@ -22,7 +32,8 @@ var newgame = function() {
 
     RandomNumber();
     RandomNumber();
-
+    score = 0;
+    updateScore(score);
 };
 
 
@@ -45,8 +56,10 @@ var init = function() {
 
     for(var i = 0; i < 4; ++i){
         board[i] = new Array();
+        hasConflicted[i] = new Array();
         for(var j = 0; j < 4; ++j){
             board[i][j] = 0;
+            hasConflicted[i][j] = false;
         }
     }
 
@@ -80,7 +93,9 @@ var updataBoardView = function() {
                 theNumberCell.css('background-color',getNumberBackgroundColor(board[i][j]));
                 theNumberCell.css('color',getNumberColor(board[i][j]));
                 theNumberCell.text(board[i][j]);
+                hasConflicted[i][j] = false;
             }
+
         }
     }
 };
@@ -99,12 +114,23 @@ var RandomNumber = function() {
 
     var x = parseInt(Math.floor(Math.random() * 4));
     var y = parseInt(Math.floor(Math.random() * 4));
-    while(true){
+    var times = 0;
+    while(times < 50){
         if(board[x][y] === 0){
             break;
         }
         x = parseInt(Math.floor(Math.random() * 4));
         y = parseInt(Math.floor(Math.random() * 4));
+    }
+    if(times === 50){
+        for(var i = 0; i < 4; ++i){
+            for(var j = 0; j < 4; ++j){
+                if(!board[i][j]){
+                    x = i;
+                    y = j;
+                }
+            }
+        }
     }
 
     //随机生成一个数字
@@ -174,10 +200,15 @@ var moveLeft = function() {
                         board[i][j] = 0;
                         continue;
                     }
-                    else if(board[i][k] == board[i][j] && noBlockHor(i,k,j,board)){
+                    else if(board[i][k] == board[i][j] && noBlockHor(i,k,j,board) && !hasConflicted[i][k]){
                         showMove(i,j,i,k);
                         board[i][k] += board[i][j];
                         board[i][j] = 0;
+                        overSize(i,k,board);
+                        //增加分数
+                        score += board[i][k];
+                        updateScore(score);
+                        hasConflicted[i][k] = true;
                         continue;
                     }
                 }
@@ -209,10 +240,15 @@ var moveUp = function() {
                         board[i][j] = 0;
                         continue;
                     }
-                    else if(board[k][j] == board[i][j] && noBlockVer(j,k,i,board)){
+                    else if(board[k][j] == board[i][j] && noBlockVer(j,k,i,board)&& !hasConflicted[k][j]){
                         showMove(i,j,k,j);
                         board[k][j] += board[i][j];
                         board[i][j] = 0;
+                        overSize(k,j,board);
+                        //增加分数
+                        score += board[k][j];
+                        updateScore(score);
+                        hasConflicted[k][j] = true;
                         continue;
                     }
                 }
@@ -244,10 +280,15 @@ var moveRight = function() {
                         board[i][j] = 0;
                         continue;
                     }
-                    else if(board[i][k] == board[i][j] && noBlockHor(i,j,k,board)){
+                    else if(board[i][k] == board[i][j] && noBlockHor(i,j,k,board) && !hasConflicted[i][k]){
                         showMove(i,j,i,k);
                         board[i][k] += board[i][j];
                         board[i][j] = 0;
+                        overSize(i,k,board);
+                        //增加分数
+                        score += board[i][k];
+                        updateScore(score);
+                        hasConflicted[i][k] = true;
                         continue;
                     }
                 }
@@ -280,10 +321,15 @@ var moveDown = function() {
                         board[i][j] = 0;
                         continue;
                     }
-                    else if(board[k][j] == board[i][j] && noBlockVer(j,i,k,board)){
+                    else if(board[k][j] == board[i][j] && noBlockVer(j,i,k,board)&& !hasConflicted[k][j]){
                         showMove(i,j,k,j);
                         board[k][j] += board[i][j];
                         board[i][j] = 0;
+                        overSize(k,j,board);
+                        //增加分数
+                        score += board[k][j];
+                        updateScore(score);
+                        hasConflicted[k][j] = true;
                         continue;
                     }
                 }
@@ -302,7 +348,7 @@ var moveDown = function() {
 /******检测游戏是否结束******/
 
 var isGameOver = function(){
-    if(nospance(board)&&nomove()){
+    if(nospance(board)&&nomove(board)){
         GameOver();
     }
 };
@@ -313,3 +359,14 @@ var isGameOver = function(){
 var GameOver = function() {
     alert('捞侠,你输了！');
 };
+
+/********增加分数*************/
+
+var updateScore = function(score){
+    $('#score').text(score);
+};
+
+
+
+
+
